@@ -1,0 +1,15 @@
+.App {
+  background-color: '#f5f5f5';
+  min-height: 100%;
+  min-width: 100%;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
