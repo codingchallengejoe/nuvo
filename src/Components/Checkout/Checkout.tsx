@@ -14,8 +14,10 @@ import theme from '../../theme'
 import { useProductStore } from '../ProductList/store'
 import { useFormik } from 'formik'
 import validationSchema from './validation'
+import * as cardValidator from 'card-validator'
 
 export default function Checkout() {
+  const [cardType, setCardType] = useState<string | null>(null)
   const [displayResponse, setDisplayResponse] = useState<boolean>()
   const { total, items } = useProductStore((state) => state)
 
@@ -141,6 +143,9 @@ export default function Checkout() {
                   .replace(/(\d{4})/g, '$1 ')
                   .trim()
                 formik.setFieldValue('cardNumber', formattedValue)
+                const cleanedValue = formattedValue.replace(/\s/g, '')
+                const validationResult = cardValidator.number(cleanedValue)
+                setCardType(validationResult.card ? validationResult.card.type : null)
               }}
               onBlur={formik.handleBlur}
               error={formik.touched.cardNumber && Boolean(formik.errors.cardNumber)}
@@ -153,9 +158,16 @@ export default function Checkout() {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>
-                    (
-                    <Box component='img' ml={1} src='mastercard.svg' sx={{ width: '20px' }} />
-                    <Box component='img' src='visa.svg' sx={{ width: '20px' }} />)
+                    {cardType === 'visa' && (
+                      <Typography variant='body2' sx={{ color: '#1a1f71', fontWeight: 'bold' }}>
+                        VISA
+                      </Typography>
+                    )}
+                    {cardType === 'mastercard' && (
+                      <Typography variant='body2' sx={{ color: '#eb001b', fontWeight: 'bold' }}>
+                        MC
+                      </Typography>
+                    )}
                   </InputAdornment>
                 ),
               }}
